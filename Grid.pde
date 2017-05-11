@@ -32,20 +32,30 @@ public class Grid {
   }
   
   public void initBlocks() {
-    // YOU WRITE THIS
+    for (int col = 0; col < COLS; col++){
+      for (int row = 0; row < ROWS; row++){
+          setBlock(col, row, 0, false);
+      }
+    }
   }
   
   public boolean isValid(int col, int row) {
-    // YOU WRITE THIS
+    if (col >= 0 && col <= COLS && row >= 0 && row <= ROWS){
+      return true;  
+    }
     return false; // stub
   }
   
   public void swap(int col1, int row1, int col2, int row2) {
-    // YOU WRITE THIS
+    int b2Value = getBlock(col2, row2).getValue();
+    setBlock(col2, row2, getBlock(col1, row1).getValue());
+    setBlock(col1, row1, b2Value);
   }
   
   public boolean canMerge(int col1, int row1, int col2, int row2) {
-    // YOU WRITE THIS
+    if (getBlock(col1, row1).getValue() == getBlock(col2, row2).getValue()){
+      return true;
+    }
     return false; // stub
   }
   
@@ -59,29 +69,55 @@ public class Grid {
  
   // Is there an open space on the grid to place a new block?
   public boolean canPlaceBlock() {
-    // YOU WRITE THIS
+    if (getEmptyLocations().size() > 0){
+      return true;
+    }
     return false; // stub
   }
   
   public ArrayList<Location> getEmptyLocations() {
-    // Put all locations that are currently empty into locs
-    // YOU WRITE THIS
-    return null; // stub
+    ArrayList<Location> locs = new ArrayList<Location>();
+    for (int col = 0; col < COLS; col++){
+      for (int row = 0; row < ROWS; row++){
+        if (getBlock(col, row).getValue() ==  0) locs.add(new Location(col, row));
+      }
+    }
+    return locs;
   }
   
   public Location selectLocation(ArrayList<Location> locs) {
-    // YOU WRITE THIS
-    return null; // stub
+    int randSelect = (int) (Math.random() * locs.size());
+    return locs.get(randSelect); // stub
   }
   
   // Randomly select an open location to place a block.
   public void placeBlock() {
-    // YOU WRITE THIS
+    Location whereToPlace = selectLocation(getEmptyLocations());
+    int value;
+    int valuePicker = (int) (Math.random() * 8);
+    
+    if (valuePicker < 2) {
+      value = 4;
+    }
+    else value = 2;
+    
+    setBlock(whereToPlace.getCol(), whereToPlace.getRow(), value);
   }
   
   // Are there any adjacent blocks that contain the same value?
   public boolean hasCombinableNeighbors() {
-    // YOU WRITE THIS
+    for (int col=0; col < COLS; col++){
+      for (int row=0; row < ROWS; row++){
+        if (canMerge(col, row, col - 1, row)) return true;
+        if (canMerge(col, row, col + 1, row)) return true;
+        if (canMerge(col, row, col - 1, row - 1)) return true;
+        if (canMerge(col, row, col + 1, row - 1)) return true;
+        if (canMerge(col, row, col - 1, row + 1)) return true;
+        if (canMerge(col, row, col + 1, row + 1)) return true;
+        if (canMerge(col, row, col, row + 1)) return true;
+        if (canMerge(col, row, col, row - 1)) return true;
+      }
+    }
     return false; // stub
   }
    
@@ -89,7 +125,36 @@ public class Grid {
   //
   // This is called ) method  the KeyEvents tab
   public boolean someBlockCanMoveInDirection(DIR dir) {
-    // YOU WRITE THIS
+    int upOrDown = 0;
+    int direction = 0;
+    
+      if (dir == DIR.WEST) {
+        direction = -1; //left
+        upOrDown = 0;
+      }
+      else if (dir == DIR.EAST) {
+        direction = 1; //right
+        upOrDown = 0;
+      }
+      else if (dir == DIR.NORTH) {
+        direction = 1; //up
+        upOrDown = 1;
+      }
+      else if (dir == DIR.SOUTH) {
+        direction = -1; //down
+        upOrDown = -1;
+      }
+    
+    for (int col=0; col < COLS; col++){
+      for (int row=0; row < ROWS; row++){
+          if (upOrDown != 0){
+            if (getBlock(col, row).getValue() != 0 && getBlock(col, row + direction).getValue() > 0) return true;
+          }
+          else if (upOrDown == 0){
+            if (getBlock(col, row).getValue() != 0 && getBlock(col + direction, row).getValue() > 0) return true;
+          }
+      }
+    }
     return false; // stub
   }
   
@@ -129,7 +194,11 @@ public class Grid {
   
   // Copy the contents of another grid to this one
   public void gridCopy(Grid other) {
-    // YOU WRITE THIS
+    for (int col = 0; col < COLS; col++){
+      for (int row = 0; row < ROWS; row++){
+        setBlock(col, row, other.getBlock(col, row));
+      }
+    }
   }
   
   public boolean isGameOver() {
