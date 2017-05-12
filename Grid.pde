@@ -109,14 +109,10 @@ public class Grid {
     for (int col=1; col < COLS - 2; col++){
       for (int row=1; row < ROWS - 2; row++){
         if (getBlock(col, row).isEmpty() == false){
-        if (canMerge(col, row, col - 1, row)) return true;
-        if (canMerge(col, row, col + 1, row)) return true;
-        if (canMerge(col, row, col - 1, row - 1)) return true;
-        if (canMerge(col, row, col + 1, row - 1)) return true;
-        if (canMerge(col, row, col - 1, row + 1)) return true;
-        if (canMerge(col, row, col + 1, row + 1)) return true;
-        if (canMerge(col, row, col, row + 1)) return true;
-        if (canMerge(col, row, col, row - 1)) return true;
+          if (canMerge(col, row, col - 1, row)) return true;
+          if (canMerge(col, row, col + 1, row)) return true;
+          if (canMerge(col, row, col, row + 1)) return true;
+          if (canMerge(col, row, col, row - 1)) return true;
         }
       }
     }
