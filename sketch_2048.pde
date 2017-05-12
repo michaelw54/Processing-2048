@@ -44,8 +44,11 @@ public void setup()
 
   // Comment out this setBlock() and replace it with a placeBlock() once you have
   // written placeBlock().
-  grid.setBlock(2,0,2,false);
-  System.out.print(grid);
+  //grid.setBlock(2,0,2,false);
+  grid.placeBlock();
+  System.out.println(grid.someBlockCanMoveInDirection(DIR.SOUTH));
+  System.out.println(grid);
+  System.out.println(grid.getEmptyLocations());
   backup_grid.gridCopy(grid);   // save grid in backup_grid in case Undo is needed
 }
 
@@ -97,6 +100,8 @@ public void gameUpdate(DIR direction)
   Grid newGrid = new Grid(COLS, ROWS);
   newGrid.gridCopy(grid);   // 
   anims = new ArrayList<Animation>();
+  
+  System.out.println(newGrid.hasCombinableNeighbors());
   
   // EAST-WEST movement
   if (direction == DIR.WEST || direction == DIR.EAST) {

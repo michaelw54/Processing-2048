@@ -34,22 +34,22 @@ public class Grid {
   public void initBlocks() {
     for (int col = 0; col < COLS; col++){
       for (int row = 0; row < ROWS; row++){
-          setBlock(col, row, 0, false);
+          block[col][row] = new Block();
       }
     }
   }
   
   public boolean isValid(int col, int row) {
-    if (col >= 0 && col <= COLS && row >= 0 && row <= ROWS){
+    if (col >= 0 && col < COLS && row >= 0 && row < ROWS){
       return true;  
     }
     return false; // stub
   }
   
   public void swap(int col1, int row1, int col2, int row2) {
-    int b2Value = getBlock(col2, row2).getValue();
-    setBlock(col2, row2, getBlock(col1, row1).getValue());
-    setBlock(col1, row1, b2Value);
+    Block b2 = getBlock(col2, row2);
+    setBlock(col2, row2, getBlock(col1, row1));
+    setBlock(col1, row1, b2);
   }
   
   public boolean canMerge(int col1, int row1, int col2, int row2) {
@@ -101,13 +101,14 @@ public class Grid {
     }
     else value = 2;
     
-    setBlock(whereToPlace.getCol(), whereToPlace.getRow(), value);
+    setBlock(whereToPlace.getCol(), whereToPlace.getRow(), value, true);
   }
   
   // Are there any adjacent blocks that contain the same value?
   public boolean hasCombinableNeighbors() {
-    for (int col=0; col < COLS; col++){
-      for (int row=0; row < ROWS; row++){
+    for (int col=1; col < COLS - 2; col++){
+      for (int row=1; row < ROWS - 2; row++){
+        if (getBlock(col, row).isEmpty() == false){
         if (canMerge(col, row, col - 1, row)) return true;
         if (canMerge(col, row, col + 1, row)) return true;
         if (canMerge(col, row, col - 1, row - 1)) return true;
@@ -116,7 +117,48 @@ public class Grid {
         if (canMerge(col, row, col + 1, row + 1)) return true;
         if (canMerge(col, row, col, row + 1)) return true;
         if (canMerge(col, row, col, row - 1)) return true;
+        }
       }
+    }
+    for (int col=1; col < COLS - 2; col++){
+      if (getBlock(col, 0).isEmpty() == false){
+        if (canMerge(col, 0, col-1, 0)) return true;
+        if (canMerge(col, 0, col+1, 0)) return true;
+        if (canMerge(col, 0, col, 1)) return true;
+      }
+    }
+    for (int col=1; col < COLS - 2; col++){
+      if (getBlock(col, ROWS-1).isEmpty() == false){
+        if (canMerge(col, ROWS - 1, col-1, ROWS - 1)) return true;
+        if (canMerge(col, ROWS - 1, col+1, ROWS - 1)) return true;
+        if (canMerge(col, ROWS - 1, col, ROWS - 2)) return true;
+      }
+    }
+    for (int row=1; row < ROWS - 2; row++){
+      if (getBlock(0, row).isEmpty() == false){
+        if (canMerge(0, row, 0, row+1)) return true;
+        if (canMerge(0, row, 0, row-1)) return true;
+        if (canMerge(0, row, 1, row)) return true;
+      }
+    }
+    for (int row=1; row < ROWS - 2; row++){
+      if (getBlock(COLS - 1, row).isEmpty() == false){
+        if (canMerge(COLS - 1, row, COLS - 1, row+1)) return true;
+        if (canMerge(COLS - 1, row, COLS - 1, row-1)) return true;
+        if (canMerge(COLS - 1, row, COLS-2, row)) return true;
+      }
+    }
+    if (getBlock(0, 0).isEmpty() == false){
+      if (canMerge(0, 0, 0, 1) || canMerge(0, 0, 1, 0)) return true;
+    }
+    if (getBlock(0, ROWS - 1).isEmpty() == false){
+      if (canMerge(0, ROWS - 1, 1, ROWS - 1) || canMerge(0, ROWS - 1, 0, ROWS-2)) return true;
+    }
+    if (getBlock(COLS - 1, ROWS - 1).isEmpty() == false){
+      if (canMerge(COLS - 1, ROWS-1, COLS-1, ROWS-2) || canMerge(COLS-1, ROWS-1, COLS-2, ROWS-1)) return true;
+    }
+    if (getBlock(COLS - 1, 0).isEmpty() == false){
+      if (canMerge(COLS-1, 0, COLS-1, 1) || canMerge(COLS-1, 0, COLS-2, 0)) return true;
     }
     return false; // stub
   }
@@ -148,10 +190,14 @@ public class Grid {
     for (int col=0; col < COLS; col++){
       for (int row=0; row < ROWS; row++){
           if (upOrDown != 0){
-            if (getBlock(col, row).getValue() != 0 && getBlock(col, row + direction).getValue() > 0) return true;
+            if (col + direction >= 0 && col + direction < COLS){
+              if (getBlock(col, row).getValue() != 0 && ((getBlock(col + direction, row).getValue() == 0 || getBlock(col + direction, row).getValue() == getBlock(col, row).getValue()))) return true;
+            }
           }
           else if (upOrDown == 0){
-            if (getBlock(col, row).getValue() != 0 && getBlock(col + direction, row).getValue() > 0) return true;
+            if (row + direction >= 0 && row + direction < ROWS){
+              if (getBlock(col, row).getValue() != 0 && ((getBlock(col, row + direction).getValue() == 0 || getBlock(col, row + direction).getValue() == getBlock(col, row).getValue()))) return true;
+            }
           }
       }
     }
@@ -160,7 +206,13 @@ public class Grid {
   
   // Computes the number of points that the player has scored
   public void computeScore() {
-    // YOU WRITE THIS
+    int thisMoveScore = 0;
+    for (int col=0; col < COLS; col++){
+      for (int row=0; row < ROWS; row++){
+        thisMoveScore += getBlock(col, row).getValue();
+      }
+    }
+    score = thisMoveScore;
   }
   
   public int getScore() {
@@ -202,8 +254,12 @@ public class Grid {
   }
   
   public boolean isGameOver() {
-    // YOU WRITE THIS
-    return false; // stub
+    //if (someBlockCanMoveInDirection(DIR.NORTH) || someBlockCanMoveInDirection(DIR.SOUTH) || someBlockCanMoveInDirection(DIR.EAST) || someBlockCanMoveInDirection(DIR.WEST)){
+    //  return false;
+    //}
+    //return true; // stub
+    if (!(hasCombinableNeighbors() || canPlaceBlock())) return true;
+    return false;
   }
   
   public void showGameOver() {
