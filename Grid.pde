@@ -137,24 +137,24 @@ public class Grid {
         upOrDown = 0;
       }
       else if (dir == DIR.NORTH) {
-        direction = 1; //up
+        direction = -1; //up
         upOrDown = 1;
       }
       else if (dir == DIR.SOUTH) {
-        direction = -1; //down
+        direction = +1; //down
         upOrDown = -1;
       }
     
     for (int col=0; col < COLS; col++){
       for (int row=0; row < ROWS; row++){
           if (upOrDown != 0){
-            if (col + direction >= 0 && col + direction < COLS){
-              if (getBlock(col, row).getValue() != 0 && ((getBlock(col + direction, row).getValue() == 0 || getBlock(col + direction, row).getValue() == getBlock(col, row).getValue()))) return true;
+            if (row + direction >= 0 && row + direction < ROWS){
+              if (getBlock(col, row).getValue() != 0 && ((getBlock(col, row + direction).getValue() == 0 || getBlock(col, row + direction).getValue() == getBlock(col, row).getValue()))) return true;
             }
           }
           else if (upOrDown == 0){
-            if (row + direction >= 0 && row + direction < ROWS){
-              if (getBlock(col, row).getValue() != 0 && ((getBlock(col, row + direction).getValue() == 0 || getBlock(col, row + direction).getValue() == getBlock(col, row).getValue()))) return true;
+            if (col + direction >= 0 && col + direction < COLS){
+              if (getBlock(col, row).getValue() != 0 && ((getBlock(col + direction, row).getValue() == 0 || getBlock(col + direction, row).getValue() == getBlock(col, row).getValue()))) return true;
             }
           }
       }
@@ -206,7 +206,7 @@ public class Grid {
   public void gridCopy(Grid other) {
     for (int col = 0; col < COLS; col++){
       for (int row = 0; row < ROWS; row++){
-        setBlock(col, row, other.getBlock(col, row));
+        setBlock(col, row, other.getBlock(col, row).getValue());
       }
     }
   }
