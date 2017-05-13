@@ -47,9 +47,9 @@ public class Grid {
   }
   
   public void swap(int col1, int row1, int col2, int row2) {
-    Block b2 = getBlock(col2, row2);
-    setBlock(col2, row2, getBlock(col1, row1));
-    setBlock(col1, row1, b2);
+    int b2Value = getBlock(col2, row2).getValue();
+    getBlock(col2, row2).setValue(getBlock(col1, row1).getValue());
+    getBlock(col1, row1).setValue(b2Value);
   }
   
   public boolean canMerge(int col1, int row1, int col2, int row2) {
@@ -105,58 +105,14 @@ public class Grid {
   }
   
   // Are there any adjacent blocks that contain the same value?
+
   public boolean hasCombinableNeighbors() {
-    for (int col=1; col < COLS - 2; col++){
-      for (int row=1; row < ROWS - 2; row++){
-        if (getBlock(col, row).isEmpty() == false){
-          if (canMerge(col, row, col - 1, row)) return true;
-          if (canMerge(col, row, col + 1, row)) return true;
-          if (canMerge(col, row, col, row + 1)) return true;
-          if (canMerge(col, row, col, row - 1)) return true;
-        }
+    for(int col = 0; col < COLS-1; col++){
+      for (int row = 0; row < ROWS-1; row++){
+        if (canMerge(col, row, col, row + 1) || canMerge(col , row, col + 1, row)) return true; //check to the right and to the bottom of each block -- covers the whole board
       }
     }
-    for (int col=1; col < COLS - 2; col++){
-      if (getBlock(col, 0).isEmpty() == false){
-        if (canMerge(col, 0, col-1, 0)) return true;
-        if (canMerge(col, 0, col+1, 0)) return true;
-        if (canMerge(col, 0, col, 1)) return true;
-      }
-    }
-    for (int col=1; col < COLS - 2; col++){
-      if (getBlock(col, ROWS-1).isEmpty() == false){
-        if (canMerge(col, ROWS - 1, col-1, ROWS - 1)) return true;
-        if (canMerge(col, ROWS - 1, col+1, ROWS - 1)) return true;
-        if (canMerge(col, ROWS - 1, col, ROWS - 2)) return true;
-      }
-    }
-    for (int row=1; row < ROWS - 2; row++){
-      if (getBlock(0, row).isEmpty() == false){
-        if (canMerge(0, row, 0, row+1)) return true;
-        if (canMerge(0, row, 0, row-1)) return true;
-        if (canMerge(0, row, 1, row)) return true;
-      }
-    }
-    for (int row=1; row < ROWS - 2; row++){
-      if (getBlock(COLS - 1, row).isEmpty() == false){
-        if (canMerge(COLS - 1, row, COLS - 1, row+1)) return true;
-        if (canMerge(COLS - 1, row, COLS - 1, row-1)) return true;
-        if (canMerge(COLS - 1, row, COLS-2, row)) return true;
-      }
-    }
-    if (getBlock(0, 0).isEmpty() == false){
-      if (canMerge(0, 0, 0, 1) || canMerge(0, 0, 1, 0)) return true;
-    }
-    if (getBlock(0, ROWS - 1).isEmpty() == false){
-      if (canMerge(0, ROWS - 1, 1, ROWS - 1) || canMerge(0, ROWS - 1, 0, ROWS-2)) return true;
-    }
-    if (getBlock(COLS - 1, ROWS - 1).isEmpty() == false){
-      if (canMerge(COLS - 1, ROWS-1, COLS-1, ROWS-2) || canMerge(COLS-1, ROWS-1, COLS-2, ROWS-1)) return true;
-    }
-    if (getBlock(COLS - 1, 0).isEmpty() == false){
-      if (canMerge(COLS-1, 0, COLS-1, 1) || canMerge(COLS-1, 0, COLS-2, 0)) return true;
-    }
-    return false; // stub
+    return false; 
   }
    
   // Notice how an enum can be used as a data type

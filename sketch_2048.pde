@@ -101,8 +101,6 @@ public void gameUpdate(DIR direction)
   newGrid.gridCopy(grid);   // 
   anims = new ArrayList<Animation>();
   
-  System.out.println(newGrid.hasCombinableNeighbors());
-  
   // EAST-WEST movement
   if (direction == DIR.WEST || direction == DIR.EAST) {
     int startingCol = direction == DIR.EAST ? GRID_SIZE-1 : 0;
@@ -182,6 +180,17 @@ public void gameUpdate(DIR direction)
   //END MOVEMENT SECTION
   
   startAnimations();
+  
+  System.out.println(newGrid.hasCombinableNeighbors());
+  System.out.println(newGrid.getBlock(0,0).getValue());
+  System.out.println(newGrid.getBlock(0,1).getValue());
+  
+  System.out.println();
+  System.out.println(newGrid.someBlockCanMoveInDirection(DIR.NORTH));
+  System.out.println(newGrid.someBlockCanMoveInDirection(DIR.EAST));
+  System.out.println(newGrid.someBlockCanMoveInDirection(DIR.SOUTH));
+  System.out.println(newGrid.someBlockCanMoveInDirection(DIR.WEST));
+  
 }
 
 public void startAnimations() {
