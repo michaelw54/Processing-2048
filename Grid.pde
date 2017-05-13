@@ -112,6 +112,12 @@ public class Grid {
         if (canMerge(col, row, col, row + 1) || canMerge(col , row, col + 1, row)) return true; //check to the right and to the bottom of each block -- covers the whole board
       }
     }
+    for (int col=0; col < COLS - 1; col++){
+      if (canMerge(col, ROWS-1, col+1, ROWS-1)) return true;
+    }
+    for (int row=0; row < ROWS - 1; row++){
+      if (canMerge(COLS-1, row, COLS-1, row+1)) return true;  
+    }
     return false; 
   }
    
